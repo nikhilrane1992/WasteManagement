@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    volumes:
+    - "./WasteManagement:/WasteManagement"
+    - "./Project_Database:/Project_Database"
+    - "./PythonConfig/deploy_commands.sh:/deploy_commands.sh"
+    - "./PythonConfig/requirements.txt:/requirements.txt"
+    ports:
+      - "1992:1992"
+    command: 
+       - /bin/bash
+       - -c
+       - |
+        pip install -r /requirements.txt 
+        echo "Starting django server ..."
+        /deploy_commands.sh
+
