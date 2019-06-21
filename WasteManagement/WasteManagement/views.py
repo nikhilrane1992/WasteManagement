@@ -77,6 +77,7 @@ def register_user(request):
 
     if user is not None:
         user.set_password(password)
+        user.save()
         auth.login(request, user)
         return JsonResponse({
             "validation": "Registered Successfull",
