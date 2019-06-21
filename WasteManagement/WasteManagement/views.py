@@ -6,7 +6,7 @@ from models import Enquiry, Ward
 from utils.helper_functions import epoch_to_date, validate_mobile
 from django.contrib.auth.models import User
 
-def user_dict(user, request):
+def user_dict(user):
     return {
         "first_name": user.first_name,
         "last_name": user.last_name
@@ -19,7 +19,7 @@ def is_user_logged_in(request):
         return JsonResponse({
             "validation": "Login Successfull",
             "status": True,
-            "user": user_dict(request.user, request)
+            "user": user_dict(request.user)
         })
     else:
         return JsonResponse({
@@ -45,7 +45,7 @@ def auth_view(request):
         return JsonResponse({
             "validation": "Login Successfull",
             "status": True,
-            "user": user_dict(user, request)
+            "user": user_dict(user)
         })
     else:
         return JsonResponse({
