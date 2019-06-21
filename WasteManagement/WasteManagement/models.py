@@ -38,6 +38,7 @@ class Ward(models.Model):
     name = models.CharField(max_length=100)
     city = models.ForeignKey(City)
     supervisor = models.ForeignKey("auth.User")
+    is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -76,6 +77,8 @@ class Enquiry(models.Model):
     address = models.TextField()
     lat = models.FloatField()
     lang = models.FloatField()
+    title = models.CharField(max_length=50)
+    content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -86,7 +89,8 @@ class Enquiry(models.Model):
         return {
             "user": {
                 "first_name": self.user.first_name,
-                "last_name": self.user.last_name
+                "last_name": self.user.last_name,
+                "mobile_no": self.user.username
             },
             "ward": self.ward.__get_json__(),
             "mobile_no": self.mobile_no,
@@ -95,6 +99,8 @@ class Enquiry(models.Model):
             "address": self.address,
             "lat": self.lat,
             "lang": self.lang,
+            "title": self.title     ,
+            "content": self.content,
             "created": int(self.created.strftime('%s')) * 1000,
             "modified": int(self.modified.strftime('%s')) * 1000
         }

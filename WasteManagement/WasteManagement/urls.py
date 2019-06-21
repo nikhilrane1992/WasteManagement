@@ -15,15 +15,18 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from views import auth_view, logout_view, get_user_enquires, get_supervisor_enquires, create_or_update_user_enquires, get_states_and_cities
+from views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
+    url(r'^is/user/login/$', is_user_logged_in),
     url(r'^user/login/$', auth_view),
+    url(r'^user/register/$', register_user),
     url(r'^user/logout/$', logout_view),
     url(r'^user/enquires/$', get_user_enquires),
     url(r'^supervisor/enquires/$', get_supervisor_enquires),
     url(r'^create/user/enquiry/$', create_or_update_user_enquires),
     url(r'^get/states/$', get_states_and_cities),
+    url(r'^get/active/wards/$', get_active_wards),
 ]
