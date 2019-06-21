@@ -129,13 +129,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "../../../../wastemanagement_static")
+STATIC_ROOT = os.path.join(BASE_DIR, "../../../wastemanagement_static")
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "../../../../wastemanagement_media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "../../../wastemanagement_media")
 MEDIA_URL = "/Media/"
 
 f = os.path.join(BASE_DIR, "WasteManagement/local_settings.py")
