@@ -47,6 +47,7 @@ class Ward(models.Model):
 
     def __get_json__(self):
         return {
+            "id": self.id,
             "name": self.name,
             "city": {
                 "name": self.city.name,
@@ -87,6 +88,7 @@ class Enquiry(models.Model):
 
     def __get_json__(self):
         return {
+            "id": self.id,
             "user": {
                 "first_name": self.user.first_name,
                 "last_name": self.user.last_name,
