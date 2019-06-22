@@ -3,7 +3,7 @@ from django.contrib import auth
 from django.http import JsonResponse
 from utils.decorators import is_login_valid, validate_registration_details
 from models import Enquiry, Ward
-from utils.helper_functions import epoch_to_date, validate_mobile
+from utils.helper_functions import epoch_to_date, validate_mobile, get_file
 from django.contrib.auth.models import User
 
 def user_dict(user):
@@ -170,7 +170,8 @@ def create_or_update_user_enquires(request):
     ward_id = params.get('ward_id')
     params.update({
         "user": request.user,
-        "ward": Ward.objects.get(id=ward_id)
+        "ward": Ward.objects.get(id=ward_id),
+        "location_pic": get_file(params.get('location_pic'))
     })
     Enquiry.objects.update_or_create(
         id=enquiry_id,

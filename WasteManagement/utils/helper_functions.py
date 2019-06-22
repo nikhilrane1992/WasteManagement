@@ -1,5 +1,10 @@
+from django.core.files.base import ContentFile
 import random, string, datetime
 import re
+import base64
+import string
+import random
+
 
 def validate_mobile(value):
     rule = re.compile(r'^(\+91[\-\s]?)?[0]?[1789]\d{9}$')
@@ -24,3 +29,12 @@ def date_to_epoch(datetime_obj):
 
 def epoch_to_date(epoach):
     return datetime.datetime.fromtimestamp(epoach / 1000)
+
+
+def id_generator(size=8, chars=string.ascii_uppercase + string.digits+string.ascii_lowercase):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+def get_file(data):
+    format, imgstr = data.split(';base64,') 
+    ext = format.split('/')[-1] 
+    return ContentFile(base64.b64decode(imgstr), name=id_generator() + '.' + ext) 
