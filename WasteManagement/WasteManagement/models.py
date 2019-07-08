@@ -4,6 +4,10 @@ from django.db import models
 import os, re
 from WasteManagement.settings import BASE_DIR
 from time import time
+import datetime
+from django.utils import timezone
+from utils.helper_functions import generateOTP, send_sms
+
 
 def upload_document(instance, filename):
     extension = os.path.splitext(filename)[1]
@@ -80,6 +84,8 @@ class Enquiry(models.Model):
     lang = models.FloatField()
     title = models.CharField(max_length=50)
     content = models.TextField()
+    comment = models.TextField(null=True, blank=True)
+    comment_pic = models.FileField(upload_to=upload_document, max_length=400)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -97,6 +103,8 @@ class Enquiry(models.Model):
             "ward": self.ward.__get_json__(),
             "mobile_no": self.mobile_no,
             "location_pic": 'Media/'+str(self.location_pic),
+            "comment_pic": 'Media/'+str(self.location_pic),
+            "comment": self.comment,
             "status": self.get_status_display(),
             "address": self.address,
             "lat": self.lat,
@@ -106,3 +114,22 @@ class Enquiry(models.Model):
             "created": int(self.created.strftime('%s')) * 1000,
             "modified": int(self.modified.strftime('%s')) * 1000
         }
+
+
+class OtpAuthenticator(models.Model):
+    otp = models.IntegerField()
+    user = models.ForeignKey("auth.User")
+    otp_expiry = models.DateTimeField(auto_now_add=True)
+
+    def is_verify(self, user_otp):
+        if self.otp_expiry + datetime.timedelta(seconds=1000) > timezone.now():
+            if (self.otp == int(user_otp.strip())):
+                return {"status": True, "validation": "OTP authenticated successfully"}
+            else:
+                return {"status": False, "validation": "Enter correct OTP"}
+        else:
+            return {"status": False, "validation": "OTP is expire please try again"}
+
+    def send_otp(self):
+        kwargs = {"senderid":"SMSTST", "channel": 2, "number": "91"+self.user.username, "message": "test message", "otp": self.otp}
+        send_sms(kwargs)

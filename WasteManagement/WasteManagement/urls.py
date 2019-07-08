@@ -25,8 +25,10 @@ urlpatterns = [
     url(r'^user/register/$', register_user),
     url(r'^user/logout/$', logout_view),
     url(r'^user/enquires/$', get_user_enquires),
-    url(r'^supervisor/enquires/$', get_supervisor_enquires),
+    url(r'^user/send/otp/$', send_otp_message),
+    url(r'^user/forgot/password/$', forgot_password),
     url(r'^create/user/enquiry/$', create_or_update_user_enquires),
     url(r'^get/states/$', get_states_and_cities),
     url(r'^get/active/wards/$', get_active_wards),
+    url(r'^change/enquiry/status/$', change_enquiry_status),
 ]
