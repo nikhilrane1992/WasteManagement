@@ -264,3 +264,12 @@ def change_enquiry_status(request):
         "status": True,
         "validation": "Status changed successfull"
     })
+
+
+def get_sensor_data(request):
+    params = json.loads(request.body)
+    print params
+    return JsonResponse({
+        "status": True,
+        "validation": "Data get successfully"
+    })
