@@ -35,7 +35,7 @@ class City(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return "city -> {} - state -> {}".format(self.name, self.state.name)
+        return "{} <- city - state -> {}".format(self.name, self.state.name)
 
 
 class Ward(models.Model):
