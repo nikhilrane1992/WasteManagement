@@ -57,5 +57,5 @@ def send_sms(kwargs):
     kwargs['APIKey'] = APIKey
     url = "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey={APIKey}&senderid={senderid}&channel={channel}&DCS=0&flashsms=0&number={number}&text={message}&route=clickhere".format(**kwargs)
     print url
-    # r = requests.get(url)
-    # print r.text
+    r = requests.get(url)
+    print r.text
