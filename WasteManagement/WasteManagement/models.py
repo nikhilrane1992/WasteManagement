@@ -122,7 +122,7 @@ class OtpAuthenticator(models.Model):
     otp_expiry = models.DateTimeField(auto_now_add=True)
 
     def is_verify(self, user_otp):
-        if self.otp_expiry + datetime.timedelta(seconds=1000) > timezone.now():
+        if self.otp_expiry + datetime.timedelta(seconds=600) > timezone.now():
             if (self.otp == int(user_otp.strip())):
                 return {"status": True, "validation": "OTP authenticated successfully"}
             else:
