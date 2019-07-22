@@ -95,14 +95,13 @@ def auth_view(request):
         })
     user = auth.authenticate(username=username, password=password)
 
-    group = Group.objects.filter(user=user).first()
-    if not group:
-        return JsonResponse({
-            "validation": "User not in any operational group",
-            "status": False,
-        })
-
     if user is not None:
+        group = Group.objects.filter(user=user).first()
+        if not group:
+            return JsonResponse({
+                "validation": "User not in any operational group",
+                "status": False,
+            })
         auth.login(request, user)
         return JsonResponse({
             "validation": "Login Successfull",
@@ -111,7 +110,7 @@ def auth_view(request):
         })
     else:
         return JsonResponse({
-            "validation": "This user not registered in our system",
+            "validation": "Invalid credential or This user not registered in our system",
             "status": False
         })
 
