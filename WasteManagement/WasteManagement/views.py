@@ -167,7 +167,6 @@ def logout_view(request):
 def get_filters(request):
     params = json.loads(request.body)
     kwargs = {}
-    date = epoch_to_date(params.get('date'))
     if params.get('group') and params.get('group') == "CUSTOMER":
         kwargs["user__username"] = request.user
     
@@ -183,7 +182,8 @@ def get_filters(request):
     if params.get('status'):
         kwargs['status'] = params.get('status')
     
-    if date:
+    if params.get('date'):
+        date = epoch_to_date(params.get('date'))
         kwargs['created__day'] = date.day
         kwargs['created__month'] = date.month
         kwargs['created__year'] = date.year

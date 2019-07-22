@@ -70,8 +70,8 @@ class Ward(models.Model):
 class Enquiry(models.Model):
     STATUS = (
         (0, "Inprogress"),
-        (1, "Complete"),
-        (2, "Canceled"),
+        (1, "Completed"),
+        (2, "Cancelled"),
         (3, "Enquiry Registered")
     )
     user = models.ForeignKey("auth.User")
@@ -131,5 +131,5 @@ class OtpAuthenticator(models.Model):
             return {"status": False, "validation": "OTP is expire please try again"}
 
     def send_otp(self):
-        kwargs = {"senderid":"SMSTST", "channel": 2, "number": "91"+self.user.username, "message": "test message", "otp": self.otp}
+        kwargs = {"senderid":"SMSTST", "channel": 2, "number": "91"+self.user.username, "message": str(self.otp)+" is your one time password to proceed on Clean City. It is valid for 10 minutes. Do not share your OTP with anyone.", "otp": self.otp}
         send_sms(kwargs)
