@@ -120,7 +120,7 @@ class Enquiry(models.Model):
                 "last_name": self.user.last_name,
                 "mobile_no": self.user.username
             },
-            "ward": self.ward.__get_json__(),
+            "sub_ward": self.sub_ward.__get_json__(),
             "mobile_no": self.mobile_no,
             "location_pic": 'Media/'+str(self.location_pic),
             "comment_pic": 'Media/'+str(self.location_pic),
