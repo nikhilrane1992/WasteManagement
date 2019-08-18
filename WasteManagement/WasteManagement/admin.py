@@ -10,12 +10,6 @@ from django import forms
 # Register your models here.
 admin.site.site_header = 'Admin Waste Management'
 
-
-
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'first_name', 'last_name', 'date_joined')
-
-
 class UserChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return '%s  %s - %s' % (obj.first_name, obj.last_name, obj.username)
@@ -34,5 +28,4 @@ admin.site.register(Ward, WardAdmin)
 admin.site.register(State)
 admin.site.register(City)
 admin.site.register(OtpAuthenticator)
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+# admin.site.register(User)
