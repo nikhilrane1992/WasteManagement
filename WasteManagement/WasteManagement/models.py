@@ -67,6 +67,26 @@ class Ward(models.Model):
         }
 
 
+class SubWard(models.Model):
+    ward = models.ForeignKey(Ward)
+    name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return "{} - {}".format(self.name, self.ward.name)
+
+    def __get_json__(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "ward": self.ward.__get_json__(),
+            "created": int(self.created.strftime('%s')) * 1000,
+            "modified": int(self.modified.strftime('%s')) * 1000
+        }
+
+
 class Enquiry(models.Model):
     STATUS = (
         (0, "Inprogress"),
@@ -75,7 +95,7 @@ class Enquiry(models.Model):
         (3, "Enquiry Registered")
     )
     user = models.ForeignKey("auth.User")
-    ward = models.ForeignKey(Ward)
+    sub_ward = models.ForeignKey(SubWard)
     mobile_no = models.CharField(max_length=12)
     location_pic = models.FileField(upload_to=upload_document, max_length=400)
     status = models.IntegerField(choices=STATUS, default=3)
@@ -133,3 +153,5 @@ class OtpAuthenticator(models.Model):
     def send_otp(self):
         kwargs = {"senderid":"SMSTST", "channel": 2, "number": "91"+self.user.username, "message": str(self.otp)+" is your one time password to proceed on Clean City. It is valid for 10 minutes. Do not share your OTP with anyone.", "otp": self.otp}
         send_sms(kwargs)
+
+

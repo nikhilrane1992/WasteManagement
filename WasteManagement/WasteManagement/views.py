@@ -2,7 +2,7 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from utils.decorators import is_login_valid, validate_registration_details
-from models import Enquiry, Ward, OtpAuthenticator
+from models import Enquiry, Ward, OtpAuthenticator, SubWard
 from utils.helper_functions import epoch_to_date, validate_mobile, get_file, generateOTP
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
@@ -211,10 +211,10 @@ def get_user_enquires(request):
 def create_or_update_user_enquires(request):
     params = json.loads(request.body)
     enquiry_id = params.get('id')
-    ward_id = params.get('ward_id')
+    sub_ward_id = params.get('sub_ward_id')
     params.update({
         "user": request.user,
-        "ward": Ward.objects.get(id=ward_id),
+        "sub_ward": SubWard.objects.get(id=sub_ward_id),
         "location_pic": get_file(params.get('location_pic'))
     })
     Enquiry.objects.update_or_create(
@@ -245,6 +245,18 @@ def get_active_wards(request):
         "status": True,
         "data": ward_list
     })
+
+
+# @is_login_valid
+def get_sub_wards(request):
+    params = json.loads(request.body)
+    wards = SubWard.objects.filter(is_active=True, ward__id=params.get('id'))
+    ward_list = [ward.__get_json__() for ward in wards]
+    return JsonResponse({
+        "status": True,
+        "data": ward_list
+    })
+
 
 
 @is_login_valid
