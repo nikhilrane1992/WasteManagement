@@ -7,6 +7,7 @@ from utils.helper_functions import epoch_to_date, validate_mobile, get_file, gen
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
+from telegram import send_message
 
 def user_dict(user):
     group = Group.objects.filter(user = user).first()
@@ -278,8 +279,9 @@ def change_enquiry_status(request):
 
 
 def get_sensor_data(request):
-    params = json.loads(request.body)
-    print params
+    send_message('SALESMANTRACKING', json.dumps(request.body))
+    print json.loads(request.body)
+
     return JsonResponse({
         "status": True,
         "validation": "Data get successfully"
