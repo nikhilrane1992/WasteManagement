@@ -8,6 +8,7 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from telegram import send_message
+import requests
 
 def user_dict(user):
     group = Group.objects.filter(user = user).first()
@@ -281,7 +282,14 @@ def change_enquiry_status(request):
 def get_sensor_data(request):
     send_message('SALESMANTRACKING', json.dumps(request.body))
     print json.loads(request.body)
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
+    for d in json.loads(request.body)['data']:
+        data = []
+        for i in d['data']:
+            if i['value'] > 0:
+                data.append({"slaveid": d['slaveid'], "value": i['value'], "code": i['name']})
+        r = requests.post('http://103.44.220.55:25732/sensor/save/data/',headers=headers, data=json.dumps(data))
     return JsonResponse({
         "status": True,
         "validation": "Data get successfully"
