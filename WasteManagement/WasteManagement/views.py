@@ -279,17 +279,39 @@ def change_enquiry_status(request):
     })
 
 
+def getDecimalNo(name, value):
+    length = -1
+    if name == '301':
+        length = 1
+    elif name == '302':
+        length = 2
+    elif name == '327':
+        length = -1
+    elif name == '340':
+        length = 1
+    elif name == '350':
+        length = 1
+    elif name == '342':
+        length = 2
+    dec_value = ''
+    for i in str(value):
+        if len(dec_value) == length:
+            dec_value+='.'+i
+        else:
+            dec_value+=i
+    return dec_value
+
 def get_sensor_data(request):
     send_message('SALESMANTRACKING', json.dumps(request.body))
-    print json.loads(request.body)
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
     for d in json.loads(request.body)['data']:
         data = []
         for i in d['data']:
             if i['value'] > 0:
-                data.append({"slaveid": d['slaveid'], "value": i['value'], "code": i['name']})
+                data.append({"slaveid": d['slaveid'], "value": getDecimalNo(str(i['name']), i['value']), "code": i['name']})
         r = requests.post('http://103.44.220.55:25732/sensor/save/data/',headers=headers, data=json.dumps(data))
+        print r.text
     return JsonResponse({
         "status": True,
         "validation": "Data get successfully"
