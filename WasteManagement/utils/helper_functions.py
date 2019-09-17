@@ -94,7 +94,7 @@ def send_complete_enquiry_SMS(enquiry):
 def send_reject_enquiry_SMS(enquiry):
     user_profile = get_user_profile(enquiry.user)
     dcs = 0
-    if user_profile['language'] == 1:
+    if user_profile['language'] == 0:
         message = "Dear complainant sorry to inform you that your complaint could not be attended because of following reasons : "+enquiry.comment+". If you have any query please contact our manager on : "+enquiry.sub_ward.ward.supervisor.username+". Or see details on the app."
     elif user_profile['language'] == 1:
         dcs = 8

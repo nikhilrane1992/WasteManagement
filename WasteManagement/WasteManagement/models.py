@@ -33,7 +33,7 @@ class UserProfile(models.Model):
     language = models.IntegerField(choices=STATUS, default=0)
     
     def __unicode__(self):
-        return "{} - {}".format(self.user.first_name+' '+self.user.last_name, self.get_language_display())
+        return "{} - {} - {}".format(self.user.first_name+' '+self.user.last_name, self.get_language_display(), self.user.username)
 
 
 class State(models.Model):
