@@ -95,10 +95,23 @@ def send_reject_enquiry_SMS(enquiry):
     user_profile = get_user_profile(enquiry.user)
     dcs = 0
     if user_profile['language'] == 0:
-        message = "Dear complainant sorry to inform you that your complaint could not be attended because of following reasons : "+enquiry.comment+". If you have any query please contact our manager on : "+enquiry.sub_ward.ward.supervisor.username+". Or see details on the app."
+        message = "Dear complainant sorry to inform you that your complaint could not be attended because of following reasons : {}. If you have any query please contact our manager on : {}. Or see details on the app.".format(enquiry.comment, enquiry.sub_ward.ward.supervisor.username)
     elif user_profile['language'] == 1:
         dcs = 8
-        message = "प्रिय उपभोगता आपणास कळवण्यात येते की खालील कारणा ("+enquiry.comment+") मुळे आपल्या तक्रारीचे निवारण करण्यात येऊ शकत नाही. तरी आपणास या बाबत काही शंका असल्यास मॅनेजरशी संपर्क साधावा : "+enquiry.sub_ward.ward.supervisor.username+". अथवा अॅप वर माहिती मिळवावी."
+        message = "प्रिय उपभोगता आपणास कळवण्यात येते की खालील कारणा ({}) मुळे आपल्या तक्रारीचे निवारण करण्यात येऊ शकत नाही. तरी आपणास या बाबत काही शंका असल्यास मॅनेजरशी संपर्क साधावा : {}. अथवा अॅप वर माहिती मिळवावी.".format(enquiry.comment, enquiry.sub_ward.ward.supervisor.username)
+    else:
+        message = "Not valid for this user"
+    kwargs = {"senderid":SENDERID, "channel": 2, "number": "91"+enquiry.user.username, "message": message, "dcs": dcs}
+    send_sms(kwargs)
+
+def send_enquiry_registerd_SMS(enquiry):
+    user_profile = get_user_profile(enquiry.user)
+    dcs = 0
+    if user_profile['language'] == 0:
+        message = "Dear complainant Thank you for your complaint. We have received your enquiry for number {}. For more details check the app.".format(enquiry.mobile_no)
+    elif user_profile['language'] == 1:
+        dcs = 8
+        message = "प्रिया उपभोगता, {} या नंबर करता तुमची तक्रार आम्हाला मिळाली आहे. तक्रार ची अधिक माहिती करता अँप बघा.".format(enquiry.mobile_no)
     else:
         message = "Not valid for this user"
     kwargs = {"senderid":SENDERID, "channel": 2, "number": "91"+enquiry.user.username, "message": message, "dcs": dcs}
@@ -107,9 +120,6 @@ def send_reject_enquiry_SMS(enquiry):
 
 def send_sms(kwargs):
     save_sms_log(kwargs)
-    print kwargs
     kwargs['APIKey'] = APIKey
     url = "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey={APIKey}&senderid={senderid}&channel={channel}&DCS={dcs}&flashsms=0&number={number}&text={message}&route=clickhere".format(**kwargs)
-    print url
     r = requests.get(url)
-    print r.text

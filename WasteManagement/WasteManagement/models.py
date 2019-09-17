@@ -6,7 +6,7 @@ from WasteManagement.settings import BASE_DIR
 from time import time
 import datetime
 from django.utils import timezone
-from utils.helper_functions import send_complete_enquiry_SMS, send_reject_enquiry_SMS, get_user_profile
+from utils.helper_functions import send_complete_enquiry_SMS, send_reject_enquiry_SMS, get_user_profile, send_enquiry_registerd_SMS
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
@@ -103,7 +103,6 @@ class SubWard(models.Model):
         }
 
 
-
 class Enquiry(models.Model):
     STATUS = (
         (0, "Inprogress"),
@@ -157,6 +156,8 @@ class Enquiry(models.Model):
             send_complete_enquiry_SMS(self)
         if self.status == 2:
             send_reject_enquiry_SMS(self)
+        if self.status == 3:
+            send_enquiry_registerd_SMS(self)
     
 
 
