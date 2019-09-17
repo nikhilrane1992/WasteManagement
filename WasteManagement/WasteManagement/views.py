@@ -211,7 +211,7 @@ def create_or_update_user_enquires(request):
         "sub_ward": SubWard.objects.get(id=sub_ward_id),
         "location_pic": get_file(params.get('location_pic'))
     })
-    created, enquiry = Enquiry.objects.update_or_create(
+    enquiry, created = Enquiry.objects.update_or_create(
         id=enquiry_id,
         defaults=params
     )
