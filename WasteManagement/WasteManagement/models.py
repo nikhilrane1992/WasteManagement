@@ -6,7 +6,11 @@ from WasteManagement.settings import BASE_DIR
 from time import time
 import datetime
 from django.utils import timezone
-from utils.helper_functions import generateOTP, send_sms
+from utils.helper_functions import send_complete_enquiry_SMS, send_reject_enquiry_SMS, get_user_profile
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User, Group
+import json
 
 
 def upload_document(instance, filename):
@@ -18,6 +22,18 @@ def upload_document(instance, filename):
     if not os.path.isdir(BASE_DIR + '/Media'):
         os.makedirs(BASE_DIR + '/Media')
     return os.path.join("%s" %(re.sub('[^a-zA-Z0-9 \.\_]', '', filename).replace(' ', ''), ))
+
+
+class UserProfile(models.Model):
+    STATUS = (
+        (0, "English"),
+        (1, "Marathi")
+    )
+    user = models.ForeignKey("auth.User")
+    language = models.IntegerField(choices=STATUS, default=0)
+    
+    def __unicode__(self):
+        return "{} - {}".format(self.user.first_name+' '+self.user.last_name, self.get_language_display())
 
 
 class State(models.Model):
@@ -87,6 +103,7 @@ class SubWard(models.Model):
         }
 
 
+
 class Enquiry(models.Model):
     STATUS = (
         (0, "Inprogress"),
@@ -135,6 +152,13 @@ class Enquiry(models.Model):
             "modified": int(self.modified.strftime('%s')) * 1000
         }
 
+    def send_enquiry_SMS(self):
+        if self.status == 1:
+            send_complete_enquiry_SMS(self)
+        if self.status == 2:
+            send_reject_enquiry_SMS(self)
+    
+
 
 class OtpAuthenticator(models.Model):
     otp = models.IntegerField()
@@ -150,8 +174,17 @@ class OtpAuthenticator(models.Model):
         else:
             return {"status": False, "validation": "OTP is expire please try again"}
 
-    def send_otp(self):
-        kwargs = {"senderid":"SMSTST", "channel": 2, "number": "91"+self.user.username, "message": str(self.otp)+" is your one time password to proceed on Clean City. It is valid for 10 minutes. Do not share your OTP with anyone.", "otp": self.otp}
-        send_sms(kwargs)
+
+class SMSLogs(models.Model):
+    logs = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return "{}".format(json.loads(self.logs))
 
 
+@receiver(post_save, sender=User, dispatch_uid="create_user_profile")
+def update_stock(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)

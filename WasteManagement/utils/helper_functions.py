@@ -1,11 +1,31 @@
+# -*- coding: utf-8 -*-
 from django.core.files.base import ContentFile
 import random, string, datetime
 import re
 import base64
 import requests
 from random import randint
+from django.contrib.auth.models import User, Group
+import json
 
 APIKey = "x6qdYCgMT0CijeDmCuavaQ"
+SENDERID = "SMSTST"
+
+def save_sms_log(data):
+    from WasteManagement.models import SMSLogs
+    SMSLogs.objects.get_or_create(logs=json.dumps(data))
+
+
+def get_user_profile(user):
+    user_profile = user.userprofile_set.get()
+    group = Group.objects.filter(user = user).first()
+    return {
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "group": group.name,
+        "language": user_profile.language,
+        "language_disp": user_profile.get_language_display(),
+    }
 
 
 def validate_mobile(value):
@@ -52,10 +72,44 @@ def generateOTP():
     return otp
 
 
+def send_otp(otp_obj):
+    kwargs = {"senderid":"SMSTST", "channel": 2, "number": "91"+otp_obj.user.username, "message": str(otp_obj.otp)+" is your one time password to proceed on Clean City. It is valid for 10 minutes. Do not share your OTP with anyone.", "otp": otp_obj.otp, "dcs": 0}
+    send_sms(kwargs)
+
+
+def send_complete_enquiry_SMS(enquiry):
+    user_profile = get_user_profile(enquiry.user)
+    dcs = 0 #Encoding format 0 for english and 8 for marathi
+    if user_profile['language'] == 0:
+        message = "Dear complainant your complaint has been successfully attended. You can look at site photographs/reply on the app. Thanking you, look forward to serving you again!"
+    elif user_profile['language'] == 1:
+        dcs = 8
+        message = "प्रिय उपभोगता आपल्या तक्रारीचे निवारण करण्यात आले आहे. आपण या संबंधीची माहिती अॅप वर पाहू शकता. धन्यवाद, आम्ही सदैव आपल्याला सेवा देण्यास उत्सूक आहोत !!"
+    else:
+        message = "Not valid for this user"
+    kwargs = {"senderid":SENDERID, "channel": 2, "number": "91"+enquiry.user.username, "message": message, "dcs": dcs}
+    send_sms(kwargs)
+
+
+def send_reject_enquiry_SMS(enquiry):
+    user_profile = get_user_profile(enquiry.user)
+    dcs = 0
+    if user_profile['language'] == 1:
+        message = "Dear complainant sorry to inform you that your complaint could not be attended because of following reasons : "+enquiry.comment+". If you have any query please contact our manager on : "+enquiry.sub_ward.ward.supervisor.username+". Or see details on the app."
+    elif user_profile['language'] == 1:
+        dcs = 8
+        message = "प्रिय उपभोगता आपणास कळवण्यात येते की खालील कारणा ("+enquiry.comment+") मुळे आपल्या तक्रारीचे निवारण करण्यात येऊ शकत नाही. तरी आपणास या बाबत काही शंका असल्यास मॅनेजरशी संपर्क साधावा : "+enquiry.sub_ward.ward.supervisor.username+". अथवा अॅप वर माहिती मिळवावी."
+    else:
+        message = "Not valid for this user"
+    kwargs = {"senderid":SENDERID, "channel": 2, "number": "91"+enquiry.user.username, "message": message, "dcs": dcs}
+    send_sms(kwargs)
+
+
 def send_sms(kwargs):
+    save_sms_log(kwargs)
     print kwargs
     kwargs['APIKey'] = APIKey
-    url = "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey={APIKey}&senderid={senderid}&channel={channel}&DCS=0&flashsms=0&number={number}&text={message}&route=clickhere".format(**kwargs)
+    url = "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey={APIKey}&senderid={senderid}&channel={channel}&DCS={dcs}&flashsms=0&number={number}&text={message}&route=clickhere".format(**kwargs)
     print url
     r = requests.get(url)
     print r.text

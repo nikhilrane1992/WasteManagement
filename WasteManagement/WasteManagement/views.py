@@ -3,20 +3,12 @@ from django.contrib import auth
 from django.http import JsonResponse
 from utils.decorators import is_login_valid, validate_registration_details
 from models import Enquiry, Ward, OtpAuthenticator, SubWard
-from utils.helper_functions import epoch_to_date, validate_mobile, get_file, generateOTP
+from utils.helper_functions import epoch_to_date, validate_mobile, get_file, generateOTP, get_user_profile, send_otp
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from telegram import send_message
 import requests
-
-def user_dict(user):
-    group = Group.objects.filter(user = user).first()
-    return {
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "group": group.name
-    }
 
 
 def is_user_logged_in(request):
@@ -24,7 +16,7 @@ def is_user_logged_in(request):
         return JsonResponse({
             "validation": "Login Successfull",
             "status": True,
-            "user": user_dict(request.user)
+            "user": get_user_profile(request.user)
         })
     else:
         return JsonResponse({
@@ -50,7 +42,7 @@ def send_otp_message(request):
             "status": False
         })
     otp_authenticator, created = OtpAuthenticator.objects.update_or_create(user=user, defaults={"otp": otp.strip(), "otp_expiry": datetime.now()})
-    otp_authenticator.send_otp()
+    send_otp(otp_authenticator)
     return JsonResponse({
         "validation": "OTP sent successfully",
         "status": False
@@ -108,7 +100,7 @@ def auth_view(request):
         return JsonResponse({
             "validation": "Login Successfull",
             "status": True,
-            "user": user_dict(user)
+            "user": get_user_profile(user)
         })
     else:
         return JsonResponse({
@@ -149,7 +141,7 @@ def register_user(request):
         return JsonResponse({
             "validation": "Registered Successfull",
             "status": True,
-            "user": user_dict(user)
+            "user": get_user_profile(user)
         })
     else:
         return JsonResponse({
@@ -261,7 +253,7 @@ def get_sub_wards(request):
 
 
 
-@is_login_valid
+# @is_login_valid
 def change_enquiry_status(request):
     params = json.loads(request.body)
     enquiry = Enquiry.objects.get(id=params.get('id'))
@@ -273,6 +265,7 @@ def change_enquiry_status(request):
 
     enquiry.status = params.get('status_id')
     enquiry.save()
+    enquiry.send_enquiry_SMS()
     return JsonResponse({
         "status": True,
         "validation": "Status changed successfull"
