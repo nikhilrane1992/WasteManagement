@@ -173,7 +173,10 @@ def get_filters(request):
         kwargs['user__username'] = params.get('user')
     
     if params.get('status'):
-        kwargs['status'] = params.get('status')
+        if int(params.get('status')) == 0:
+            kwargs['status__in'] = [0, 3]
+        else:
+            kwargs['status'] = params.get('status')
     
     if params.get('date'):
         date = epoch_to_date(params.get('date'))
