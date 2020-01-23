@@ -2,7 +2,7 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from utils.decorators import is_login_valid, validate_registration_details
-from models import Enquiry, Ward, OtpAuthenticator, SubWard
+from models import Enquiry, Ward, OtpAuthenticator, SubWard, UserProfile
 from utils.helper_functions import epoch_to_date, validate_mobile, get_file, generateOTP, get_user_profile, send_otp
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
