@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^get/states/$', get_states_and_cities),
     url(r'^get/active/wards/$', get_active_wards),
     url(r'^change/enquiry/status/$', change_enquiry_status),
-    url(r'^get/sensor/data/$', get_sensor_data),
     url(r'^get/sub/wards/$', get_sub_wards),
+    url(r'^update/language/$', update_language),
+    url(r'^get/sensor/data/$', get_sensor_data),
 ]

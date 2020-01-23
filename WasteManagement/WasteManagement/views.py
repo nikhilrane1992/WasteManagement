@@ -278,6 +278,18 @@ def change_enquiry_status(request):
     })
 
 
+
+def update_language(request):
+    params = json.loads(request.body)
+    user_profile = UserProfile.objects.get(user=requests.user)
+    user_profile.language = params['language']
+    user_profile.save()
+    return JsonResponse({
+        "status": True,
+        "validation": "Language changed successfull"
+    })
+
+
 def getDecimalNo(name, value):
     length = -1
     if name == '301':
