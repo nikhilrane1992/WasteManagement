@@ -105,7 +105,7 @@ class SubWard(models.Model):
 
 class Enquiry(models.Model):
     STATUS = (
-        (0, "Inprogress"),
+        (4, "Inprogress"),
         (1, "Completed"),
         (2, "Cancelled"),
         (3, "Enquiry Registered")
@@ -126,7 +126,7 @@ class Enquiry(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return "{} - {}".format(self.user.first_name, self.user.last_name)
+        return "{} - {} - Status--> {}".format(self.user.first_name, self.user.last_name, self.get_status_display())
 
     def __get_json__(self):
         return {
@@ -142,6 +142,7 @@ class Enquiry(models.Model):
             "comment_pic": 'Media/'+str(self.location_pic),
             "comment": self.comment,
             "status": self.get_status_display(),
+            "status_id": self.status,
             "address": self.address,
             "lat": self.lat,
             "lang": self.lang,

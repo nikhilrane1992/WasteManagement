@@ -164,17 +164,18 @@ def get_filters(request):
         kwargs["user__username"] = request.user
     
     if params.get('group') and params.get('group') == "SUPERVISOR":
-        kwargs["ward__supervisor__username"] = request.user
+        kwargs["sub_ward__ward__supervisor__username"] = request.user
 
     if params.get('city'):
-        kwargs['ward__city__name'] = params.get('city')
+        kwargs['sub_ward__ward__city__name'] = params.get('city')
 
     if params.get('user'):
         kwargs['user__username'] = params.get('user')
     
     if params.get('status'):
-        if int(params.get('status')) == 0:
-            kwargs['status__in'] = [0, 3]
+        print "status-->", params.get('status')
+        if int(params.get('status')) == 4:
+            kwargs['status__in'] = [4, 3]
         else:
             kwargs['status'] = params.get('status')
     
@@ -191,6 +192,7 @@ def get_filters(request):
 @is_login_valid
 def get_user_enquires(request):
     kwargs = get_filters(request)
+    print kwargs, request.body
     enquires = Enquiry.objects.filter(**kwargs)
     enquires_list = []
     for enquiry in enquires:
