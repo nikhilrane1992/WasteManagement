@@ -281,7 +281,7 @@ def change_enquiry_status(request):
 
 def update_language(request):
     params = json.loads(request.body)
-    user_profile = UserProfile.objects.get(user=requests.user)
+    user_profile = user.userprofile_set.get()
     user_profile.language = params['language']
     user_profile.save()
     return JsonResponse({
