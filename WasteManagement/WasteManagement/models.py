@@ -26,11 +26,11 @@ def upload_document(instance, filename):
 
 class UserProfile(models.Model):
     STATUS = (
-        (0, "English"),
-        (1, "Marathi")
+        ('en', "English"),
+        ('mr', "Marathi")
     )
     user = models.ForeignKey("auth.User")
-    language = models.IntegerField(choices=STATUS, default=0)
+    language = models.CharField(choices=STATUS, default='en', max_length=2)
     
     def __unicode__(self):
         return "{} - {} - {}".format(self.user.first_name+' '+self.user.last_name, self.get_language_display(), self.user.username)
