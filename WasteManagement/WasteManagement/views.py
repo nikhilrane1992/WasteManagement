@@ -99,7 +99,7 @@ def auth_view(request):
             })
         auth.login(request, user)
         user_profile = user.userprofile_set.get()
-        user_profile.language = params['language']
+        user_profile.language = language
         user_profile.save()
         return JsonResponse({
             "validation": "Login Successfull",
