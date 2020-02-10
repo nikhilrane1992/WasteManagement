@@ -81,6 +81,7 @@ def auth_view(request):
 
     username = dict['username']
     password = dict['password']
+    language = dict['language']
 
     if not validate_mobile(username):
         return JsonResponse({
@@ -97,6 +98,9 @@ def auth_view(request):
                 "status": False,
             })
         auth.login(request, user)
+        user_profile = user.userprofile_set.get()
+        user_profile.language = params['language']
+        user_profile.save()
         return JsonResponse({
             "validation": "Login Successfull",
             "status": True,
