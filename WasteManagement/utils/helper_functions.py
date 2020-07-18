@@ -80,9 +80,9 @@ def send_otp(otp_obj):
 def send_complete_enquiry_SMS(enquiry):
     user_profile = get_user_profile(enquiry.user)
     dcs = 0 #Encoding format 0 for english and 8 for marathi
-    if user_profile['language'] == 0:
+    if user_profile['language'] == 'en':
         message = "Dear complainant your complaint has been successfully attended. You can look at site photographs/reply on the app. Thanking you, look forward to serving you again!"
-    elif user_profile['language'] == 1:
+    elif user_profile['language'] == 'mr':
         dcs = 8
         message = "प्रिय उपभोगता आपल्या तक्रारीचे निवारण करण्यात आले आहे. आपण या संबंधीची माहिती अॅप वर पाहू शकता. धन्यवाद, आम्ही सदैव आपल्याला सेवा देण्यास उत्सूक आहोत !!"
     else:
@@ -94,9 +94,9 @@ def send_complete_enquiry_SMS(enquiry):
 def send_reject_enquiry_SMS(enquiry):
     user_profile = get_user_profile(enquiry.user)
     dcs = 0
-    if user_profile['language'] == 0:
+    if user_profile['language'] == 'en':
         message = "Dear complainant sorry to inform you that your complaint could not be attended because of following reasons : {}. If you have any query please contact our manager on : {}. Or see details on the app.".format(enquiry.comment, enquiry.sub_ward.ward.supervisor.username)
-    elif user_profile['language'] == 1:
+    elif user_profile['language'] == 'mr':
         dcs = 8
         message = "प्रिय उपभोगता आपणास कळवण्यात येते की खालील कारणा ({}) मुळे आपल्या तक्रारीचे निवारण करण्यात येऊ शकत नाही. तरी आपणास या बाबत काही शंका असल्यास मॅनेजरशी संपर्क साधावा : {}. अथवा अॅप वर माहिती मिळवावी.".format(enquiry.comment, enquiry.sub_ward.ward.supervisor.username)
     else:
@@ -107,9 +107,9 @@ def send_reject_enquiry_SMS(enquiry):
 def send_enquiry_registerd_SMS(enquiry):
     user_profile = get_user_profile(enquiry.user)
     dcs = 0
-    if user_profile['language'] == 0:
+    if user_profile['language'] == 'en':
         message = "Dear complainant Thank you for your complaint. We have received your enquiry for number {}. For more details check the app.".format(enquiry.mobile_no)
-    elif user_profile['language'] == 1:
+    elif user_profile['language'] == 'mr':
         dcs = 8
         message = "प्रिया उपभोगता, {} या नंबर करता तुमची तक्रार आम्हाला मिळाली आहे. तक्रार ची अधिक माहिती करता अँप बघा.".format(enquiry.mobile_no)
     else:
