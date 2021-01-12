@@ -14,6 +14,6 @@ python WasteManagement/manage.py createprojectsuperuser
 
 # Start server
 echo "Starting server"
-python WasteManagement/manage.py runserver 0.0.0.0:1992
+python WasteManagement/manage.py runserver 0.0.0.0:8000
 
 

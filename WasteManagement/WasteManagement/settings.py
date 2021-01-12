@@ -25,7 +25,7 @@ SECRET_KEY = '1)g*#!)a!!(o!)cdhq#e1i*^1+x$qu$%al@&7khuo&2jt-!s&!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['optiex.webfactional.com', '103.44.220.55']
+ALLOWED_HOSTS = ['35.154.75.43']
 
 
 # Application definition
