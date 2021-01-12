@@ -29,7 +29,7 @@ class UserProfile(models.Model):
         ('en', "English"),
         ('mr', "Marathi")
     )
-    user = models.ForeignKey("auth.User")
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     language = models.CharField(choices=STATUS, default='en', max_length=2)
     
     def __unicode__(self):
@@ -47,7 +47,7 @@ class State(models.Model):
 class City(models.Model):
     name = models.CharField(max_length=100)
     pincode = models.IntegerField()
-    state = models.ForeignKey(State)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     def __unicode__(self):
@@ -56,8 +56,8 @@ class City(models.Model):
 
 class Ward(models.Model):
     name = models.CharField(max_length=100)
-    city = models.ForeignKey(City)
-    supervisor = models.ForeignKey("auth.User")
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    supervisor = models.ForeignKey("auth.User", on_delete=models.CASCADE,)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -84,7 +84,7 @@ class Ward(models.Model):
 
 
 class SubWard(models.Model):
-    ward = models.ForeignKey(Ward)
+    ward = models.ForeignKey(Ward, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -110,8 +110,8 @@ class Enquiry(models.Model):
         (2, "Cancelled"),
         (3, "Enquiry Registered")
     )
-    user = models.ForeignKey("auth.User")
-    sub_ward = models.ForeignKey(SubWard)
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    sub_ward = models.ForeignKey(SubWard, on_delete=models.CASCADE)
     mobile_no = models.CharField(max_length=12)
     location_pic = models.FileField(upload_to=upload_document, max_length=400)
     status = models.IntegerField(choices=STATUS, default=3)
@@ -164,7 +164,7 @@ class Enquiry(models.Model):
 
 class OtpAuthenticator(models.Model):
     otp = models.IntegerField()
-    user = models.ForeignKey("auth.User")
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     otp_expiry = models.DateTimeField(auto_now_add=True)
 
     def is_verify(self, user_otp):

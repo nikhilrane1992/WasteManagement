@@ -1,6 +1,6 @@
 import json
 from django.http import JsonResponse
-from helper_functions import validate_email, validate_mobile
+from utils.helper_functions import validate_email, validate_mobile
 
 def is_login_valid(function):
     def wrap(request, *args, **kwargs):

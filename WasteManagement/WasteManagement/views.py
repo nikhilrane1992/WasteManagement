@@ -2,12 +2,12 @@ import json
 from django.contrib import auth
 from django.http import JsonResponse
 from utils.decorators import is_login_valid, validate_registration_details
-from models import Enquiry, Ward, OtpAuthenticator, SubWard, UserProfile
+from WasteManagement.models import Enquiry, Ward, OtpAuthenticator, SubWard, UserProfile
 from utils.helper_functions import epoch_to_date, validate_mobile, get_file, generateOTP, get_user_profile, send_otp
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-from telegram import send_message
+from WasteManagement.telegram import send_message
 import requests
 
 
@@ -177,7 +177,7 @@ def get_filters(request):
         kwargs['user__username'] = params.get('user')
     
     if params.get('status'):
-        print "status-->", params.get('status')
+        print("status-->", params.get('status'))
         if int(params.get('status')) == 4:
             kwargs['status__in'] = [4, 3]
         else:
@@ -196,7 +196,7 @@ def get_filters(request):
 @is_login_valid
 def get_user_enquires(request):
     kwargs = get_filters(request)
-    print kwargs, request.body
+    print(kwargs, request.body)
     enquires = Enquiry.objects.filter(**kwargs)
     enquires_list = []
     for enquiry in enquires:
@@ -326,7 +326,7 @@ def get_sensor_data(request):
             if i['value'] > 0:
                 data.append({"slaveid": d['slaveid'], "value": getDecimalNo(str(i['name']), i['value']), "code": i['name']})
         r = requests.post('http://103.44.220.55:25732/sensor/save/data/',headers=headers, data=json.dumps(data))
-        print r.text
+        print(r.text)
     return JsonResponse({
         "status": True,
         "validation": "Data get successfully"
