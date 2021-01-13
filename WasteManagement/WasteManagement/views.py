@@ -12,7 +12,7 @@ import requests
 
 
 def is_user_logged_in(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return JsonResponse({
             "validation": "Login Successfull",
             "status": True,
@@ -251,7 +251,7 @@ def get_active_wards(request):
     })
 
 
-# @is_login_valid
+@is_login_valid
 def get_sub_wards(request):
     params = json.loads(request.body)
     wards = SubWard.objects.filter(is_active=True, ward__id=params.get('id'))
@@ -263,7 +263,7 @@ def get_sub_wards(request):
 
 
 
-# @is_login_valid
+@is_login_valid
 def change_enquiry_status(request):
     params = json.loads(request.body)
     enquiry = Enquiry.objects.get(id=params.get('id'))
@@ -282,7 +282,7 @@ def change_enquiry_status(request):
     })
 
 
-
+@is_login_valid
 def update_language(request):
     params = json.loads(request.body)
     user_profile = request.user.userprofile_set.get()

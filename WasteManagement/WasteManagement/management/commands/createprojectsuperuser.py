@@ -14,7 +14,7 @@ class Command(BaseCommand):
                 password='optiex@123',
                 last_login=timezone.now())
         else:
-            print "Super user already present"
+            print("Super user already present")
 
         for group in ["CUSTOMER", "ADMIN", "SUPERVISOR"]:
             Group.objects.get_or_create(

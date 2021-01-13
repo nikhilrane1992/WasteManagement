@@ -4,7 +4,7 @@ from utils.helper_functions import validate_email, validate_mobile
 
 def is_login_valid(function):
     def wrap(request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return function(request, *args, **kwargs)
         else:
             return JsonResponse({

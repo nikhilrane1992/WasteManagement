@@ -1,4 +1,4 @@
 Django
-ipython==5.3.0
-django-cors-headers==2.2.0
+ipython
+django-cors-headers
 requests

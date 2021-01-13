@@ -32,7 +32,7 @@ class UserProfile(models.Model):
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     language = models.CharField(choices=STATUS, default='en', max_length=2)
     
-    def __unicode__(self):
+    def __str__(self):
         return "{} - {} - {}".format(self.user.first_name+' '+self.user.last_name, self.get_language_display(), self.user.username)
 
 
@@ -40,7 +40,7 @@ class State(models.Model):
     name = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    def __unicode__(self):
+    def __str__(self):
         return "{}".format(self.name)
 
 
@@ -50,7 +50,7 @@ class City(models.Model):
     state = models.ForeignKey(State, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    def __unicode__(self):
+    def __str__(self):
         return "{} <- city - state -> {}".format(self.name, self.state.name)
 
 
@@ -62,7 +62,7 @@ class Ward(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} - {}".format(self.name, self.supervisor.first_name)
 
     def __get_json__(self):
@@ -90,7 +90,7 @@ class SubWard(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} - {}".format(self.name, self.ward.name)
 
     def __get_json__(self):
@@ -125,7 +125,7 @@ class Enquiry(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} - {} - Status--> {}".format(self.user.first_name, self.user.last_name, self.get_status_display())
 
     def __get_json__(self):
@@ -182,7 +182,7 @@ class SMSLogs(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{}".format(json.loads(self.logs))
 
 

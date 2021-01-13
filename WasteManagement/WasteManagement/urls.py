@@ -16,6 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from WasteManagement.views import *
+from WasteManagement import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -34,4 +36,4 @@ urlpatterns = [
     url(r'^get/sub/wards/$', get_sub_wards),
     url(r'^update/language/$', update_language),
     url(r'^get/sensor/data/$', get_sensor_data),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,13 +3,14 @@ version: '3'
 services:
   web:
     build: .
+    working_dir: /home/python/app
     volumes:
-    - "./WasteManagement:/WasteManagement"
-    - "./Project_Database:/Project_Database"
+    - "./WasteManagement:/home/python/app/WasteManagement"
+    - "./Project_Database:/home/python/app/Project_Database"
     - "./PythonConfig/deploy_commands.sh:/deploy_commands.sh"
     - "./PythonConfig/requirements.txt:/requirements.txt"
     ports:
-      - "1992:1992"
+      - "8000:8000"
     command: 
        - /bin/bash
        - -c
